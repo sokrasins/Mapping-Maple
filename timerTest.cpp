@@ -19,8 +19,8 @@ void setup() {
    timer_set_mode(TIMER1, 1, TIMER_PWM);			// Set up Timer 1, Channel 1 to operate in PWM mode	
 	timer_pause(TIMER1);									// Temporarily stop the timer while configuring
 	timer_set_count(TIMER1, 0);						// Reset the timer count to 0
-	timer_set_reload(TIMER1, 1125);					// Reload, Compare, and Prescaler values set to 
-	timer_set_compare(TIMER1, 1, 562);				// produce a frequency of 32 kHz
+	timer_set_reload(TIMER1, 562);					// Reload, Compare, and Prescaler values set to 
+	timer_set_compare(TIMER1, 1, 281);				// produce a frequency of 32 kHz
 	timer_set_prescaler(TIMER1, 1);
 	
 	timer_pause(TIMER5);									// Because Timer 5 shares output pin with Timer 2
@@ -29,22 +29,22 @@ void setup() {
 	timer_set_mode(TIMER2, 1, TIMER_PWM);			// Similar configuration to Timer 1
 	timer_pause(TIMER2);
 	timer_set_count(TIMER2, 0);
-	timer_set_reload(TIMER2, 1125);
-	timer_set_compare(TIMER2, 1, 562);				// Frequency: 16 kHz 
+	timer_set_reload(TIMER2, 562);
+	timer_set_compare(TIMER2, 1, 281);				// Frequency: 16 kHz 
 	timer_set_prescaler(TIMER2, 3);
 
 	timer_set_mode(TIMER3, 1, TIMER_PWM);			// Similar configuration to Timer 1
 	timer_pause(TIMER3);
 	timer_set_count(TIMER3, 0);
-	timer_set_reload(TIMER3, 1125);
-	timer_set_compare(TIMER3, 1, 562);				// Frequency: 8 kHz
+	timer_set_reload(TIMER3, 562);
+	timer_set_compare(TIMER3, 1, 281);				// Frequency: 8 kHz
 	timer_set_prescaler(TIMER3, 7);
 
 	timer_set_mode(TIMER4, 1, TIMER_PWM);			// Similar configuration to Timer 1
 	timer_pause(TIMER4);
 	timer_set_count(TIMER4, 0);
-	timer_set_reload(TIMER4, 1125);
-	timer_set_compare(TIMER4, 1, 562);				// Frequency: 4 kHz
+	timer_set_reload(TIMER4, 562);
+	timer_set_compare(TIMER4, 1, 281);				// Frequency: 4 kHz
 	timer_set_prescaler(TIMER4, 15);
 	
 	timer_resume(TIMER1);								// Begin timers
