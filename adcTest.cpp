@@ -1,56 +1,63 @@
 // Stan Okrasinski     10/24/11
-// TEST program, sets up ADC
+// TEST program, sets up ADC to be triggered from
+// TIMER1 CC1 event. Board LED will flash after
+// 32000 ADC conversions, and the timer is set
+// for a frequency of 32 kHz. The LED should change
+// state at a rate of 1 Hz. Note the rate of ADC 
+// conversion is determined, in this case, more by
+// the trigger rate than the ADC sample time.
 
 #include "wirish.h"
 #include "adc.h"
 #include "timer.h"
 
-int count;
-uint32 adc_sequence=0;
-int toggle = 1;
+int count;													// Count of ADC conversions											
+uint32 adc_sequence=0;									// ADC sequence to be pushed to bit registers
+int toggle = 1;											// Keep track of LED toggle status
 
 uint32 calc_adc_sequence(uint8 adc_sequence_array[6]);
 
 void setup() {
 	count=0;
 
-	int period = 1124;
-	int duty = 562;
+	int period = 1124;									// Period of ADC conversion
+	int duty = 562;										// Moment of conversion in period
 
-	pinMode(BOARD_LED_PIN, OUTPUT);
+	pinMode(BOARD_LED_PIN, OUTPUT);					// Configure LED as output
 
-	TIMER1->regs->CR2 |= 1<<8;			// TODO: set OIS1, reset OIS1N
-	timer_set_mode(TIMER1, 1, TIMER_PWM);	// Set up Timer 1, Channel 1 to operate in PWM mode
+	(TIMER1->regs).adv->CR2 |= 1<<8;					// Set OIS1. Necessary for timer to trigger ADC conversion
+	(TIMER1->regs).adv->CR2 = bitClear((TIMER1->regs).adv->CR2,9);    // Clear OIS1N. Also necessary
+	timer_set_mode(TIMER1, 1, TIMER_PWM);			// Set up Timer 1, Channel 1 to operate in PWM mode
 	timer_pause(TIMER1);									// Temporarily stop the timer while configuring
 	timer_set_count(TIMER1, 0);						// Reset the timer count to 0
 	timer_set_reload(TIMER1, period);				// Reload, Compare, and Prescaler values set to 
 	timer_set_compare(TIMER1, 1, duty);				// produce a frequency of 32 kHz
-	timer_set_prescaler(TIMER1, 1);
+	timer_set_prescaler(TIMER1, 1);					// Set no prescaler
 	//TIMER1->regs->CR2 
 
-	adc_calibrate(ADC1);
-	adc_set_sample_rate(ADC1, ADC_SMPR_7_5);
-	adc_set_exttrig(ADC1, 1);
-	adc_set_extsel(ADC1, ADC_ADC12_TIM1_CC1);
-	adc_set_reg_seqlen(ADC1, 1);
+	adc_calibrate(ADC1);									// Calibrate ADC. Should occur once at code execution
+	adc_set_sample_rate(ADC1, ADC_SMPR_71_5);		// ADC sample time of 71.5 ADC cycles
+	adc_set_exttrig(ADC1, 1);							// ADC expects an external trigger....
+	adc_set_extsel(ADC1, ADC_ADC12_TIM1_CC1);		// ... from TIMER1 CC1
+	adc_set_reg_seqlen(ADC1, 1);						// ADC makes a single conversion
 
-	uint8 ADC1_Sequence[]={1,0,0,0,0,0};
-	ADC1->regs->SQR3 |= calc_adc_sequence(ADC1_Sequence);
+	uint8 ADC1_Sequence[]={1,0,0,0,0,0};			// ADC converts voltage on first ADC pin 
+	ADC1->regs->SQR3 |= calc_adc_sequence(ADC1_Sequence);	// Converts ADC sequence to bit register notation
 
-	adc_enable(ADC1);
-	timer_resume(TIMER1);
+	adc_enable(ADC1);										// Enables ADC
+	timer_resume(TIMER1);								// Enables timer
 }
 
 void loop() {
-	if((ADC1->regs->SR & 1<<1) == 2)
+	if((ADC1->regs->SR & 1<<1) == 2)					// If ADC is finished with a conversion
 	{		
-		ADC1->regs->SR ^= 1<<1;
-		count++;
-		if(count==32000)
+		ADC1->regs->SR ^= 1<<1;							// Reset EOC bit
+		count++;												// Increment counter
+		if(count==32000)									// If number of conversions reaches 32000
 		{
-			count = 0;
-			digitalWrite(BOARD_LED_PIN, toggle);
-			toggle ^= 1;
+			count = 0;										// Reset count
+			digitalWrite(BOARD_LED_PIN, toggle);	// Toggle LED
+			toggle ^= 1;									// Track LED state
 		}
 	}
 }
