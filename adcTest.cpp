@@ -1,4 +1,4 @@
-// Stan Okrasinski     10/24/11
+// Stan Okrasinski     							10/25/11
 // TEST program, sets up ADC to be triggered from
 // TIMER1 CC1 event. Board LED will flash after
 // 32000 ADC conversions, and the timer is set
@@ -6,6 +6,9 @@
 // state at a rate of 1 Hz. Note the rate of ADC 
 // conversion is determined, in this case, more by
 // the trigger rate than the ADC sample time.
+// Functions in loop serve as a test mechanism, so
+// timer-based sampling does not depend on 
+// interrupts or recurrent cycle-using code.
 
 #include "wirish.h"
 #include "adc.h"
@@ -77,6 +80,10 @@ int main(void) {
 
     return 0;
 }
+
+// Function borrowed from Leaf Labs example DualRegSample.pde, coded by
+// Samtal 
+// url: https://github.com/mbolivar/DualRegSample/blob/master/DualRegSample.pde
 
 uint32  calc_adc_sequence(uint8 adc_sequence_array[6])
 {
