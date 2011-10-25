@@ -44,7 +44,7 @@ void setup() {
 	adc_set_extsel(ADC1, ADC_ADC12_TIM1_CC1);		// ... from TIMER1 CC1
 	adc_set_reg_seqlen(ADC1, 1);						// ADC makes a single conversion
 
-	uint8 ADC1_Sequence[]={1,0,0,0,0,0};			// ADC converts voltage on first ADC pin 
+	uint8 ADC1_Sequence[]={10,0,0,0,0,0};			// ADC converts voltage on ADC pin 10 (D7)
 	ADC1->regs->SQR3 |= calc_adc_sequence(ADC1_Sequence);	// Converts ADC sequence to bit register notation
 
 	adc_enable(ADC1);										// Enables ADC

@@ -12,7 +12,7 @@ waves are configured using bit registers so no
 processor cycles are spent maintaining the waves. 
 
 *****  adcTest.cpp  *****
-ADC1 is configured to sample pin X when triggered from
+ADC1 is configured to sample pin D7 when triggered from
 TIMER1 CC1 event. TIMER1 is set to oscillate at 32 kHz,
 and the onboard LED is toggled after 32000 ADC samples.
 Thus, the board LED should toggle at a rate of 1 Hz. 
