@@ -1,2 +1,27 @@
-Code designed to test capabilites of Maple Native board.
-So far, so good!
+Contributors: 
+Stan Okrasinski, sokrasins@gmail.com
+
+Code designed to test capabilites of Maple Native board,
+and it's ability to function as a high-density, low-
+speed acquisition device.
+
+***** timerTest.cpp *****
+Four timers, TIMER1-4, produce 50% duty cycle waves at 
+frequencies of 32kHz, 16kHz, 8kHz, and 4kHz. The PWM
+waves are configured using bit registers so no 
+processor cycles are spent maintaining the waves. 
+
+*****  adcTest.cpp  *****
+ADC1 is configured to sample pin X when triggered from
+TIMER1 CC1 event. TIMER1 is set to oscillate at 32 kHz,
+and the onboard LED is toggled after 32000 ADC samples.
+Thus, the board LED should toggle at a rate of 1 Hz. 
+Again, all code is based on built-in pheripherals, so
+no processor cycles are spent maintaining ADC sampling
+(function in loop is only serving as validtaion, and is
+not critical to ADC operation).
+
+TODO:
+spiTest.cpp   -- need FT4232H
+dmaTest.cpp   -- need spiTest to verify data transfer
+
